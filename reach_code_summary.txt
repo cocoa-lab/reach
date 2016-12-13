@@ -1,0 +1,75 @@
+Experiment:
+
+    make_reach_trials.py          -- creates schedule of trials for test
+    make_reach_trials_training.py -- creates schedule of trials for training
+    reach_constants_Su16.py       -- stores all constants used in training or test
+    reach_components_Su16.py      -- stores all components (objects) used in training or test
+    reach_train_Su16.py           -- executable training portion of the experiment
+    reach_test_Su16.py            -- executable test portion of the experiment
+    
+    All behavioral data stored in /data/
+
+    in /loss_aversion/
+
+    loss_aversion.py              -- executable gambling task to get loss aversion pattern
+    calcLossAversion.py           -- computes the LA scores of each participant, given
+     							     their response patterns
+
+    loss aversion scores saved as All_Lambdas.csv in /loss_aversion/ 
+
+Analysis:
+   
+    reach_analysis_functions_Fa16_graph.py --useful set of functions for analysis and graphing 
+    reach_analysis_constants_Fa16.py       --constants used by functions above
+    
+    standardize_data.py   -- standardizes behavioral test data 
+                             (i.e., maps all end-points to a standard
+                              config with targ = [0, 0], pen to left)
+                              (REQUIRES TRAIN/TEST/LOSS_AVERSION BEHAVIORAL DATA)
+
+    All standardized data stored in /standard_data/
+
+    model_data.R          -- determines EV of points in 100 x 100 grid
+                             using simulations of pokes around each point,
+                             using (pen, sep) and std dev 
+                             (and LA scores, depending on model)
+                             (REQUIRES STANDARD DATA)
+
+    ..._EV_graph_data.csv files, containing (x, y) grid points and EVs, saved to /model_output/
+
+    get_model_estimate.py -- determines (x, y) aimpoint with the highest EV for each 
+                             subject, configuration, and model
+                             (REQUIRES EV GRAPH DATA)
+
+    make_dev_frame.py     -- creates a df with all standard behav. data
+    						 and model estimates (condition specific) for each
+    						 subject and model
+    						 (REQUIRES MODEL ESTIMATES AND STANDARD DATA)
+
+    df saved as ...deviance_input.csv in /deviance_files/ (used in model fitting)
+
+    fit_model.R           -- computes the AIC measure of each model using 
+         				     the deviance_input files, collapsed accross all configs
+         				     and participants
+         				     (REQUIRES DEV INPUT)
+
+    fit_model_by_cond.R   -- computes the AIC measure of each model, not collapsed
+    					     (REQUIRES DEV INPUT) 
+
+    AIC measures saved in /aic_files/
+
+Graphing: 
+
+    make_2D_graph.py      -- plots behavioral data, average end-point, and each model
+                             estimate; different fig for each subject, different
+                             subplot for each condition
+                             (REQUIRES STANDARD DATA AND MODEL ESTIMATES)
+    
+    make_3D_graph.R      -- creates 3D landscape of expected values associated with
+                             each point on 100 x 100 (x, y) grid; contours on base;
+                             different fig/ax for each sub, model, and config
+                             (no subplotting)
+                             (REQUIRES EV GRAPH DATA & STANDARD TEST DATA)
+
+    within sub graphs saved in /graphs/*subject's number*/
+

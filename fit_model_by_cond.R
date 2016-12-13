@@ -61,7 +61,7 @@ for (mod in c('Y', 'N')){
 	        standard_dev  <- sqrt(mean(standard_data[["train1_var"]]))
 
 	        
-            dev_input_dir <- paste(wd, '/', sub_string, '_', mod, '_deviance_input.csv', sep = "", collapse = "")
+            dev_input_dir <- paste(wd, '/deviance_files/', sub_string, '_', mod, '_deviance_input.csv', sep = "", collapse = "")
 	        raw_dev_data  <- read.csv(dev_input_dir)
 	        dev_data   <- raw_dev_data[raw_dev_data$"cond" == cond,]
 	        poke_vec   <- dev_data$"poke"
@@ -74,7 +74,7 @@ for (mod in c('Y', 'N')){
 	        	        mean = est_vec, 
 	        	        sd   = std_vec,
 	        	        log  = TRUE))
-	        
+	    
 	        if (mod == 'Y') {
 	        	p <- 2
 	        } else {
@@ -82,13 +82,6 @@ for (mod in c('Y', 'N')){
 	        }
 
 	        sub_aic <- dev + 2*p
-
-	        if((cond == 0) & (sub == 404)){
-	        	print(mod)
-	        	print(dev)
-	        	print(sub_aic)
-	        }
-
 
 	        if (mod == 'Y') {
 				loss_all_aic <- c(loss_all_aic, sub_aic)
