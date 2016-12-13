@@ -66,7 +66,7 @@ Graphing:
                              (REQUIRES STANDARD DATA AND MODEL ESTIMATES)
     
     make_3D_graph.R      -- creates 3D landscape of expected values associated with
-                             each point on 100 x 100 (x, y) grid; contours on base;
+                             each point on 100 x 100 (x, y) grid;
                              different fig/ax for each sub, model, and config
                              (no subplotting)
                              (REQUIRES EV GRAPH DATA & STANDARD TEST DATA)
