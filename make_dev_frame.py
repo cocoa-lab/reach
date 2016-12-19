@@ -34,6 +34,8 @@ Condition Sep Pen
 '''
 
 def main():
+    print all_subs
+    1/0
     
   
     for sub in all_subs:

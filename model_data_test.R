@@ -1,6 +1,6 @@
 #CONSTANTS
 #number of pokes to simulate around each aim point
-SIM_SIZE  <- 10
+SIM_SIZE  <- 100
 SEP_DISTS <- c(32, 44)
 PEN_VALS  <- c(0, -1, -3, -5, -15)
 RADIUS    <- rep(32, SIM_SIZE)
@@ -79,9 +79,13 @@ targAndPen <- function(targ_poke, pen_poke) {
 #given an (x,y) aim point, N number of pokes, poke variability, penalty value, and separation distance
 #simulates N pokes around aimpoint and computes and returns the mean earnings (i.e., expected value)
 getExpectedValue <- function(aim_point, num_pokes, poke_var, pen_val, sep_dist, lambda) {
-
+  #  print("LA")
+  #  print(lambda)
+  #  print("Pen_val")
+   # print(pen_val)
     pen <- pen_val*lambda
-
+  #  print("pen")
+   #print(pen)
     if (pen_val == -3 | pen_val == -15) {
         rew <- 3
     } else {
@@ -122,16 +126,17 @@ writeGraphData <- function(exp_vals, pen_val, sep_dist, lambda, std_train){
     std_rep          <- rep((std_train), length(graph_x))
     
     graph.data       <- data.frame(x_aim = graph_x,  y_aim = graph_y, ev = exp_vals, mod_pen = mod_pen_rep, sep = sep_dist_rep, std = std_rep)
+    print(graph.data)
     sep_string       <- toString(sep_dist)
     pen_val          <- abs(pen_val)
     pen_string       <- toString(pen_val)
     graph_data_file  <- paste(output_dir, '_', sep_string, '_', pen_string, GD_SUFFIX, sep = "", collapse = "")
-    write.table(graph.data, file = graph_data_file, row.names=FALSE, sep = ",")
+    #write.table(graph.data, file = graph_data_file, row.names=FALSE, sep = ",")
 }
 
 #MAIN LOOP
 #ommitted 407, 410, 500  ...  411, 412, 501, 502
-for (sub_int in c(403, 404, 405, 406)){ #  503, 504, 505, 506
+for (sub_int in c(403)){ #  503, 504, 505, 506 , 404, 405, 406
     for (LA_input in c('Y', 'N')){
 
         print("Subject:")
@@ -180,10 +185,8 @@ for (sub_int in c(403, 404, 405, 406)){ #  503, 504, 505, 506
                     temp_aim  <- as.numeric(XY_GRID[n,])
                     temp_ev   <- getExpectedValue(temp_aim, SIM_SIZE, train_std, pen, sep, loss_aversion)
                     graph_EVs <- c(graph_EVs, temp_ev)
-                    
-
                 }
-                writeGraphData(graph_EVs, pen, sep, loss_aversion, train_std)
+                #writeGraphData(graph_EVs, pen, sep, loss_aversion, train_std)
             }
         }
     }   
