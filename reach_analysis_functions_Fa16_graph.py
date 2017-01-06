@@ -7,7 +7,7 @@ import matplotlib as mpl
 from scipy.stats import ttest_ind
 from pandas import Series, DataFrame
 from matplotlib import pyplot as plt
-from matplotlib import style
+#from matplotlib import style
 from scipy import stats
 from matplotlib import rcParams
 from ast import literal_eval
@@ -19,6 +19,7 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 # import statsmodels.api as sm
 from operator import itemgetter
+from math import sqrt
 
 from reach_analysis_constants_Fa16 import *
  
@@ -31,7 +32,7 @@ def distance(p1, p2):
     return math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2)
 
 def get_LA_score(sub):
-    LA_score_frame = pd.read_csv(current_working_dir + '/loss_aversion/All_lambdas.csv')
+    LA_score_frame = pd.read_table(current_working_dir + '/loss_aversion/All_lambdas.csv')
     LA_score       = LA_score_frame[LA_score_frame['subNum'] == sub].lambdas.mean()
     return LA_score
 
@@ -513,14 +514,6 @@ def get_standard_train1_frame(subject_number):
  
             abs_poke_pos_x      = abs(standard_poke_pos_x)
             abs_poke_pos_y      = standard_poke_pos_y
-
-        if standard_poke_pos_x < OUT_X_MIN or standard_poke_pos_x > OUT_X_MAX:
-            standard_poke_pos_x = float('nan')
-            standard_poke_pos_y = float('nan')
-
-        if standard_poke_pos_y < OUT_Y_MIN or standard_poke_pos_y > OUT_Y_MAX:
-            standard_poke_pos_y = float('nan')
-            standard_poke_pos_x = float('nan')
        
         standard_pokes_x.append(standard_poke_pos_x)
         standard_pokes_y.append(standard_poke_pos_y)
@@ -533,6 +526,25 @@ def get_standard_train1_frame(subject_number):
  
     train1_frame['absolutePokePosX'] = absolute_pokes_x
     train1_frame['absolutePokePosY'] = absolute_pokes_y
+
+    sd = np.mean([sqrt(np.nanvar(train1_frame.standardPokePosX)), sqrt(np.nanvar(train1_frame.standardPokePosY))])
+
+    for n in range(0, len(train1_frame.index)):
+
+        if train1_frame.iloc[n]['standardPokePosX'] > 3*sd:
+            train1_frame.set_value(n, 'standardPokePosX', float('nan'))
+            train1_frame.set_value(n, 'standardPokePosY', float('nan'))
+        elif train1_frame.iloc[n]['standardPokePosX'] < -3*sd:
+            train1_frame.set_value(n, 'standardPokePosX', float('nan'))
+            train1_frame.set_value(n, 'standardPokePosY', float('nan'))
+        elif train1_frame.iloc[n]['standardPokePosY'] > 3*sd:
+            train1_frame.set_value(n, 'standardPokePosX', float('nan'))
+            train1_frame.set_value(n, 'standardPokePosY', float('nan'))
+        elif train1_frame.iloc[n]['standardPokePosY'] < -3*sd:
+            train1_frame.set_value(n, 'standardPokePosX', float('nan'))
+            train1_frame.set_value(n, 'standardPokePosY', float('nan'))
+
+
  
     return train1_frame
  
@@ -705,7 +717,7 @@ def get_standard_test_frame(subject_number):
             standard_poke_pos_x = temp_poke_pos[0] - temp_targ_pos[0] 
             standard_poke_pos_y = temp_poke_pos[1] - temp_targ_pos[1]
             abs_poke_pos_x      = abs(standard_poke_pos_x)
-            abs_poke_pos_y      = standard_poke_pos_y
+            abs_poke_pos_y      = abs(standard_poke_pos_y)
             
  
             #if the target was drawn left of the penalty, then reflect the shifted poke position over the y_axis, otherwise do nothing
@@ -719,9 +731,10 @@ def get_standard_test_frame(subject_number):
         # if standard_poke_pos_y < OUT_Y_MIN or standard_poke_pos_y > OUT_Y_MAX:
         #     standard_poke_pos_y = float('nan')
         #     standard_poke_pos_x = float('nan')
+        
+        
+    
 
-
- 
         abs_sep = abs(temp_sep_dist)
         
         standard_pokes_x.append(standard_poke_pos_x)
@@ -775,6 +788,46 @@ def get_standard_test_frame(subject_number):
     #for sake of analysis, throw out all trials where poke occurred after 1s
     test_frame = test_frame[test_frame['tooSlow'] == 0]
 
+    sd = np.mean([sqrt(np.nanvar(test_frame.standardPokePosX)), sqrt(np.nanvar(test_frame.standardPokePosY))])
+
+    for n in range(0, len(test_frame.index)):
+        # print 'sd'
+        # print '___'
+        # print sd
+        # print 'standardPokePosX'
+        # print '_______________'
+        # print test_frame.iloc[n]['standardPokePosX']
+        # print 'standardPokePosY'
+        # print '_______________'
+        # print test_frame.iloc[n]['standardPokePosY']
+        
+
+        if test_frame.iloc[n]['standardPokePosX'] > 3*sd:
+            test_frame.set_value(n, 'standardPokePosX', float('nan'))
+            test_frame.set_value(n, 'standardPokePosY', float('nan'))
+        elif test_frame.iloc[n]['standardPokePosX'] < -3*sd:
+            test_frame.set_value(n, 'standardPokePosX', float('nan'))
+            test_frame.set_value(n, 'standardPokePosY', float('nan'))
+        elif test_frame.iloc[n]['standardPokePosY'] > 3*sd:
+            test_frame.set_value(n, 'standardPokePosX', float('nan'))
+            test_frame.set_value(n, 'standardPokePosY', float('nan'))
+        elif test_frame.iloc[n]['standardPokePosY'] < -3*sd:
+            test_frame.set_value(n, 'standardPokePosX', float('nan'))
+            test_frame.set_value(n, 'standardPokePosY', float('nan'))
+
+
+        # print 'standardPokePosX Modified'
+        # print '_______________'
+        # print test_frame.iloc[n]['standardPokePosX']
+        # print 'standardPokePosY Modified'
+        # print '_______________'
+        # print test_frame.iloc[n]['standardPokePosY']
+
+    print test_frame.standardPokePosX
+        
+
+
+    
     return test_frame
  
 #takes a dataframe returned by get_standard_test_frame(), a positive separation distance constant, and a subject number

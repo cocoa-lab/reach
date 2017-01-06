@@ -14,15 +14,13 @@ import math
 from math import sqrt
 import glob
 
-from reach_analysis_functions_Fa16_graph import graph_var_by_cond_between, get_LR_lev_frames, get_stat_frames, create_folder, graph_pokeTime_by_cond_within
-from reach_analysis_functions_Fa16_graph import get_x_var, get_y_var, get_standard_train1_frame, get_standard_train2_frame, graph_releaseTime_by_cond_within
-from reach_analysis_functions_Fa16_graph import graph_by_val_sep_test_within, graph_by_sep_test_within,  get_standard_test_frame
-#global variables at top
-from reach_analysis_functions_Fa16_graph import *
+from reach_analysis_functions_Fa16_graph import get_standard_train1_frame, get_standard_test_frame, get_x_var, get_y_var, get_LA_score, get_stat_frames
 all_subs = []
 input_dir ='data/'
 
 BETWEEN_SUB_GRAPH_DIR = '\\graphs\\between\\'
+
+current_working_dir = os.getcwd()
 
 
 #all_e_subs = glob.glob('*_reach_train_output.csv')
@@ -44,10 +42,12 @@ def main():
 
         loss_aversion_score = get_LA_score(sub)
 
+        
+
         temp_test_frame   = DataFrame() #stores standardized test data for one subject
         temp_stat_frames  = DataFrame() #stores stats for all conditions in train1, 2, or test for one subject 
 
-        temp_output_directory = '\\standard_data\\'
+        temp_output_directory = '/standard_data/'
         
         temp_test_frame   = get_standard_test_frame(sub)
         loss_aversion_list = [loss_aversion_score] * len(temp_test_frame.index)
@@ -63,8 +63,10 @@ def main():
         #mean variance for entire training part 2
         train1_var        = np.mean([train1_x_var, train1_y_var])
         train1_var_list   = [train1_var] * len(temp_test_frame.index)
-
         temp_test_frame['train1_var'] = train1_var_list
+
+
+        print temp_test_frame
 
         temp_vars.to_csv(current_working_dir+temp_output_directory+'%s_condition_variances.csv' % (sub))
         temp_train1_frame.to_csv(current_working_dir+temp_output_directory+'%s_standard_train1_data.csv' %(sub))

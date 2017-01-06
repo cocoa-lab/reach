@@ -7,7 +7,7 @@ import matplotlib as mpl
 from scipy.stats import ttest_ind
 from pandas import Series, DataFrame
 from matplotlib import pyplot as plt
-from matplotlib import style
+#from matplotlib import style
 from scipy import stats
 from matplotlib import rcParams
 from ast import literal_eval
@@ -21,9 +21,8 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 from operator import itemgetter
  
 #global variables at top
-input_dir ='data\\'
- 
 current_working_dir = os.getcwd()
+input_dir = current_working_dir + '/data/'
  
 ONE_ONE   = 1
 THREE_ONE = 3
